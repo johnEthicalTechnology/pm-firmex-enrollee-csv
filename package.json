@@ -1,0 +1,15 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "A script called by PM Zoho CRM passing in enrollees details for a course they've signed up for. The details are formatted into a CSV and emailed to a PM Canada person to sign enrollees up to the Firmex system.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-ethicalTech:johnEthicalTechnology/pm-firmex-enrollee-csv.git"
+  },
+  "author": "John Brilliant",
+  "license": "ISC"
+}
