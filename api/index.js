@@ -1,8 +1,63 @@
-const fs = require('fs')
 const nodemailer = require("nodemailer");
+const ExcelJS = require('exceljs');
+
+const testD = [
+  {
+    emailAddress: "john.stewart@ethicaltechnology.co",
+    firstName: "Fist",
+    lastName: "Attendee",
+    company: "TEST COMPANY",
+    office: "PM Sydney"
+  },
+  {
+    emailAddress: "john.stewart@ethicaltechnology.co",
+    firstName: "Second",
+    lastName: "Attendee",
+    company: "TEST COMPANY",
+    office: "PM Sydney"
+  },
+  {
+    emailAddress: "john.stewart@ethicaltechnology.co",
+    firstName: "Third",
+    lastName: "Attendee",
+    company: "TEST COMPANY",
+    office: "PM Sydney"
+  }
+]
+
+// const usersAddToFirmexWorkbook = new ExcelJS.Workbook()
+const usersAddToFirmexWorkbook = new ExcelJS.Workbook()
+const importUsersWorksheet = usersAddToFirmexWorkbook.addWorksheet('Import Users')
+importUsersWorksheet.columns = [
+  {
+    header: 'Email Address',
+    key: 'emailAddress'
+  },
+  {
+    header: 'First Name',
+    key: 'firstName'
+  },
+  {
+    header: 'Last Name',
+    key: 'lastName'
+  },
+  {
+    header: 'Company',
+    key: 'company'
+  },
+  {
+    header: 'Office',
+    key: 'office'
+  }
+]
 
 // async..await is not allowed in global scope, must use a wrapper
 async function main(email) {
+  testD.forEach(userDetails => {
+    console.log('testing', userDetails);
+    importUsersWorksheet.addRow(userDetails)
+  })
+  const buffer = await usersAddToFirmexWorkbook.xlsx.writeBuffer()
   // Generate test SMTP service account from ethereal.email
   // Only needed if you don't have a real mail account for testing
   // let testAccount = await nodemailer.createTestAccount();
@@ -25,33 +80,17 @@ async function main(email) {
     subject: "Hello ✔", // Subject line
     text: "Hello world?", // plain text body
     html: "<b>Hello world?</b>", // html body
+    attachments: [
+      {
+        filename: 'firmexSpreedsheet.xlsx',
+        content: buffer
+      }
+    ]
   });
 
   console.log("Message sent: %s", info.messageId);
   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 
-  // Preview only available when sending through an Ethereal account
-  // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-  // // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-}
-
-function writeToCSVFile(users) {
-  const filename = 'output.csv';
-  fs.writeFile(filename, extractAsCSV(users), err => {
-    if (err) {
-      console.log('Error writing to csv file', err);
-    } else {
-      console.log(`saved as ${filename}`);
-    }
-  });
-}
-
-function extractAsCSV(users) {
-  const header = ["Email Address, First Name, Last Name, Company, Office"];
-  const rows = users.map(user =>
-     `${user.emailAddress}, ${user.firstName}, ${user.lastName}, ${user.company}, ${user.office}`
-  );
-  return header.concat(rows).join("\n");
 }
 
 
@@ -71,11 +110,6 @@ module.exports = async (req, res) => {
   //   },
   //   ...
   // ]
-  console.log('testing before send');
-
-  const test = await main('bretttest@zohomail.com');
-
-  console.log('testing AFTER send brett test', test);
   // const enrolleeInfoForFirmex = JSON.parse(req.body);
   const test1 = await main('brett.handley@prioritymanagement.com.au');
   console.log('test1', test1);

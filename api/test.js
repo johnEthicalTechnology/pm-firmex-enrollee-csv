@@ -1,4 +1,4 @@
-const fs = require('fs')
+const ExcelJS = require('exceljs');
 
 const testD = [
   {
@@ -24,26 +24,35 @@ const testD = [
   }
 ]
 
-function writeToCSVFile(users) {
-  const filename = 'output.csv';
-  fs.writeFile(filename, extractAsCSV(users), err => {
-    if (err) {
-      console.log('Error writing to csv file', err);
-    } else {
-      console.log(`saved as ${filename}`);
-    }
-  });
-}
+// const usersAddToFirmexWorkbook = new ExcelJS.Workbook()
+const usersAddToFirmexWorkbook = new ExcelJS.Workbook()
+const importUsersWorksheet = usersAddToFirmexWorkbook.addWorksheet('Import Users')
+importUsersWorksheet.columns = [
+  {
+    header: 'Email Address',
+    key: 'emailAddress'
+  },
+  {
+    header: 'First Name',
+    key: 'firstName'
+  },
+  {
+    header: 'Last Name',
+    key: 'lastName'
+  },
+  {
+    header: 'Company',
+    key: 'company'
+  },
+  {
+    header: 'Office',
+    key: 'office'
+  }
+]
 
-function extractAsCSV(users) {
-  const header = ["Email Address, First Name, Last Name, Company, Office"];
-  const rows = users.map(user =>
-     `${user.emailAddress}, ${user.firstName}, ${user.lastName}, ${user.company}, ${user.office}`
-  );
-  return header.concat(rows).join("\n");
-}
+testD.forEach(userDetails => {
+  console.log('testing', userDetails);
+  importUsersWorksheet.addRow(userDetails)
+})
 
-
-const foop = writeToCSVFile(testD);
-
-console.log('foop', foop);
+usersAddToFirmexWorkbook.xlsx.writeFile('test.xlsx').catch((err) => console.error('err', err))
