@@ -11,5 +11,8 @@
     "url": "git@github-ethicalTech:johnEthicalTechnology/pm-firmex-enrollee-csv.git"
   },
   "author": "John Brilliant",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "nodemailer": "^6.4.6"
+  }
 }
