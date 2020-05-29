@@ -14,9 +14,9 @@ module.exports = async (req, res) => {
   //   },
   //   ...
   // ]
-  console.log('req.body', req.body);
+  console.log('Recieved req.body.data', req.body.data);
 
-  const enrolleeInfoForFirmex = JSON.parse(req.body)
+  const enrolleeInfoForFirmex = JSON.parse(req.body.data)
 
   //* 2) Setup workbook, and worksheet (actual spreadsheet).
   const usersAddToFirmexWorkbook = new ExcelJS.Workbook()
