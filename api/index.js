@@ -14,6 +14,8 @@ module.exports = async (req, res) => {
   //   },
   //   ...
   // ]
+  console.log('req.body', req.body);
+
   const enrolleeInfoForFirmex = JSON.parse(req.body)
 
   //* 2) Setup workbook, and worksheet (actual spreadsheet).
@@ -43,7 +45,7 @@ module.exports = async (req, res) => {
   ]
   //* 3) Add user details to worksheet
   enrolleeInfoForFirmex.forEach(userDetails => {
-    console.log(`User Details ${userDetails} added to worksheet`)
+    console.log(`Adding ${userDetails.firstName[0]}. ${userDetails.lastName} to worksheet`)
     importUsersWorksheet.addRow(userDetails)
   })
   try {
