@@ -63,13 +63,13 @@ module.exports = async (req, res) => {
     })
 
     //* 6) Send mail with defined transport object
-    const companyName = enrolleeInfoForFirmex[0].Company
+    const companyName = enrolleeInfoForFirmex[0].company
     const emailRes = await transporter.sendMail({
       from: `'Priority Management Sydney' <brett.handley@prioritymanagement.com.au>`,
       to: 'john.stewart@ethicaltechnology.co',
       subject: 'Firmex spreadsheet',
-      text: `Dear Sandi,/r This is the Firmex spreadsheet containing users with ${companyName}/r Regards,/rAdriana Parinetto`,
-      html: `<p>Dear Sandi,</p><p>This is the Firmex spreadsheet containing users with ${companyName}</p><p>Regards,<br/>Adriana Parinetto</p>`,
+      text: `Dear Sandi,/r This is the Firmex spreadsheet containing users from ${companyName}/r Regards,/rAdriana Parinetto`,
+      html: `<p>Dear Sandi,</p><p>This is the Firmex spreadsheet containing users from ${companyName}</p><p>Regards,<br/>Adriana Parinetto</p>`,
       attachments: [
         {
           filename: 'firmexSpreedsheet.xlsx',
