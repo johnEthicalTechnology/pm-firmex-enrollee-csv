@@ -6,11 +6,11 @@ module.exports = async (req, res) => {
   // enrolleeInfoForFirmex
   // [
   //   {
-  //     'Email Address':'john.stewart@ethicaltechnology.co',
-  //     'First Name':'Second',
-  //     'Last Name':'Attendee',
-  //     'Company':'TEST COMPANY',
-  //     'Office':'PM Sydney'
+  //     'emailAddress':'john.stewart@ethicaltechnology.co',
+  //     'firstName':'Second',
+  //     'lastName':'Attendee',
+  //     'company':'TEST COMPANY',
+  //     'office':'PM Sydney'
   //   },
   //   ...
   // ]
@@ -67,6 +67,7 @@ module.exports = async (req, res) => {
     const emailRes = await transporter.sendMail({
       from: `'Priority Management Sydney' <brett.handley@prioritymanagement.com.au>`,
       to: 'sandir@prioritymanagement.com',
+      cc: 'materials@prioritymanagement.com.au',
       subject: `Firmex spreadsheet for ${companyName}`,
       text: `Dear Sandi,/r This is the Firmex spreadsheet containing users from ${companyName}/r Regards,/rAdriana Parinetto`,
       html: `<p>Dear Sandi,</p><p>This is the Firmex spreadsheet containing users from ${companyName}</p><p>Regards,<br/>Adriana Parinetto</p>`,
