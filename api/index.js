@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const ExcelJS = require('exceljs');
+const { join } = require('path')
 
 module.exports = async (req, res) => {
   //* 1) Parse JSON
@@ -19,38 +20,23 @@ module.exports = async (req, res) => {
   const enrolleeInfoForFirmex = JSON.parse(req.body.data)
 
   //* 2) Setup workbook, and worksheet (actual spreadsheet).
-  const usersAddToFirmexWorkbook = new ExcelJS.Workbook()
-  const importUsersWorksheet = usersAddToFirmexWorkbook.addWorksheet('Import Users')
-  importUsersWorksheet.columns = [
-    {
-      header: 'Email Address',
-      key: 'emailAddress'
-    },
-    {
-      header: 'First Name',
-      key: 'firstName'
-    },
-    {
-      header: 'Last Name',
-      key: 'lastName'
-    },
-    {
-      header: 'Company',
-      key: 'company'
-    },
-    {
-      header: 'Office',
-      key: 'office'
-    }
-  ]
+  const firmexTemplateWb = new ExcelJS.Workbook()
+  const firmexSpreedsheet = await firmexTemplateWb.xlsx.readFile(join(__dirname, '_files', 'firmexTemplate.xlsx'))
+  const importUsersWorksheet = firmexSpreedsheet.getWorksheet('Import Users')
+
   //* 3) Add user details to worksheet
-  enrolleeInfoForFirmex.forEach(userDetails => {
+  enrolleeInfoForFirmex.forEach((userDetails, index) => {
     console.log(`Adding ${userDetails.firstName[0]}. ${userDetails.lastName} to worksheet`)
-    importUsersWorksheet.addRow(userDetails)
+    const rowValue = index + 2
+    importUsersWorksheet.getCell(`A${rowValue}`).value = userDetails.emailAddress
+    importUsersWorksheet.getCell(`B${rowValue}`).value = userDetails.firstName
+    importUsersWorksheet.getCell(`C${rowValue}`).value = userDetails.lastName
+    importUsersWorksheet.getCell(`D${rowValue}`).value = userDetails.company
+    importUsersWorksheet.getCell(`E${rowValue}`).value = userDetails.office
   })
   try {
     //* 4) Create buffer
-    const buffer = await usersAddToFirmexWorkbook.xlsx.writeBuffer()
+    const buffer = await firmexTemplateWb.xlsx.writeBuffer()
     //* 5) Create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       host: 'smtp.zoho.com',
@@ -66,18 +52,18 @@ module.exports = async (req, res) => {
     const companyName = enrolleeInfoForFirmex[0].company
     const emailRes = await transporter.sendMail({
       from: `'Priority Management Sydney' <brett.handley@prioritymanagement.com.au>`,
-      cc: 'materials@prioritymanagement.com.au',
+      cc: 'john.stewart@ethicaltechnology.co',
       subject: `Firmex spreadsheet for ${companyName}`,
-      text: `Dear PM Admin,/r This is the Firmex spreadsheet containing users from ${companyName}/r Regards,/rAdriana Parinetto`,
-      html: `<p>Dear PM Admin,</p><p>This is the Firmex spreadsheet containing users from ${companyName}</p><p>Regards,<br/>Adriana Parinetto</p>`,
+      text: `Dear PM Admin,/r This is the Firmex spreadsheet containing users from ${companyName}/r Regards,/rZoho Automation`,
+      html: `<p>Dear PM Admin,</p><p>This is the Firmex spreadsheet containing users from ${companyName}</p><p>Regards,<br/>Zoho Automation</p>`,
       attachments: [
         {
-          filename: 'firmexSpreedsheet.xlsx',
+          filename: `${companyName} - ${new Date()}.xlsx`,
           content: buffer
         }
       ]
     })
-    console.log('Message sent:', emailRes.messageId)
+    console.log('Message sent: ', emailRes.messageId)
     res.json({body: `Message sent: ${emailRes.messageId}`})
   } catch (error) {
     console.error('Error:', error)
