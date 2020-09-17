@@ -11,7 +11,8 @@ module.exports = async (req, res) => {
   //     'firstName':'Second',
   //     'lastName':'Attendee',
   //     'company':'TEST COMPANY',
-  //     'office':'PM Sydney'
+  //     'office':'PM Sydney',
+  //     'dateOfTraining: '17/09/20'
   //   },
   //   ...
   // ]
@@ -33,6 +34,8 @@ module.exports = async (req, res) => {
     importUsersWorksheet.getCell(`C${rowValue}`).value = userDetails.lastName
     importUsersWorksheet.getCell(`D${rowValue}`).value = userDetails.company
     importUsersWorksheet.getCell(`E${rowValue}`).value = userDetails.office
+    importUsersWorksheet.getCell(`F${rowValue}`).value = 'adriana.parinetto@prioritymanagement.com.au'
+    importUsersWorksheet.getCell(`G${rowValue}`).value = 'Yes'
   })
   try {
     //* 4) Create buffer
@@ -50,15 +53,18 @@ module.exports = async (req, res) => {
 
     //* 6) Send mail with defined transport object
     const companyName = enrolleeInfoForFirmex[0].company
+    console.log('Company Name ', companyName)
+    const startDateOfTraining = enrolleeInfoForFirmex[0].dateOfTraining
+    console.log('Date of training ', startDateOfTraining)
     const emailRes = await transporter.sendMail({
       from: `'Priority Management Sydney' <brett.handley@prioritymanagement.com.au>`,
-      cc: 'john.stewart@ethicaltechnology.co',
+      cc: 'materials@prioritymanagement.com.au',
       subject: `Firmex spreadsheet for ${companyName}`,
       text: `Dear PM Admin,/r This is the Firmex spreadsheet containing users from ${companyName}/r Regards,/rZoho Automation`,
       html: `<p>Dear PM Admin,</p><p>This is the Firmex spreadsheet containing users from ${companyName}</p><p>Regards,<br/>Zoho Automation</p>`,
       attachments: [
         {
-          filename: `${companyName} - ${new Date()}.xlsx`,
+          filename: `${companyName} - ${startDateOfTraining}.xlsx`,
           content: buffer
         }
       ]
