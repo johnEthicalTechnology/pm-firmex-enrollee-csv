@@ -83,7 +83,6 @@ module.exports = async (req, res) => {
       const emailRes = await transporter.sendMail({
         from: `'Priority Management Sydney' <brett.handley@prioritymanagement.com.au>`,
         to: 'materials@prioritymanagement.com.au',
-        cc: 'john.stewart@ethicaltechnology.co',
         subject: `Firmex spreadsheet for ${companyName}`,
         text: `Dear PM Admin,/r This is the Firmex spreadsheet containing users from ${companyName}/r Regards,/rZoho Automation`,
         html: `<p>Dear PM Admin,</p><p>This is the Firmex spreadsheet containing users from ${companyName}</p><p>Regards,<br/>Zoho Automation</p>`,
